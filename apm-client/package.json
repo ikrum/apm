@@ -1,0 +1,20 @@
+{
+  "name": "apm-client",
+  "version": "1.0.0",
+  "description": "Client for Akiraku process manager",
+  "main": "main.js",
+  "bin": {
+    "apm-client": "main.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ikrum Hossain",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^0.16.0",
+    "colors": "^1.1.2",
+    "connect-multiparty": "^2.0.0",
+    "request": "^2.65.0"
+  }
+}
