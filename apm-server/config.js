@@ -1,7 +1,7 @@
 var config = {
 	DEPLOY_PATH : process.env.HOME+'/apm-deploy',
-	PORT_A:5000,
-	PORT_B:5001
+	PORT_A:6001,
+	PORT_B:6002
 }
 
 module.exports = config;
