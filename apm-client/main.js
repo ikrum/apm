@@ -1,84 +1,69 @@
 #! /usr/bin/env node
 
-var fs = require("fs");
-var archiver = require('archiver');
-var zipArchive = archiver('zip');
-var request = require('request');
+var socketio = require('socket.io-client')
+var readline = require('readline');
+var ss = require('socket.io-stream');
+var fs = require('fs');
+var config = require('./config');
+var clientHandler = require('./clientHandler');
 var colors = require('colors');
 
 var prefix = colors.gray("APM ");
-var apmDir = __dirname;
-var currentDir = process.cwd();
-var distDir = currentDir +'/'+'dist/';
-var packageJson,config;
+var serverPrefix = colors.gray("SERVER ");
 
-// Load apm config.json
-try {
-	var configFile = apmDir + "/config.json";
-	var file = fs.readFileSync(configFile, 'utf8');
-	config = JSON.parse(file);
-}
-catch(e){
-	if(e.message.indexOf("no such file")>0){
-		console.log(prefix+colors.red("config.json not found! Please re-install apm"));
-		return;
-	}
-}
+var socket = socketio(config.server);
+var rl = readline.createInterface(process.stdin, process.stdout);
 
-// check for project package.json
-try {
-	var packageFile = currentDir + "/package.json";
-	var file = fs.readFileSync(packageFile, 'utf8');
-	packageJson = JSON.parse(file);
-}
-catch(e){
-	if(e.message.indexOf("no such file")>0){
-		console.log(prefix+colors.red("package.json not found"));
-		return;
-	}
-}
+var acceptedCommands=["deploy","status"]
 
+rl.setPrompt("apm:> ");
 
+socket.on('connect', function(){
+    rl.prompt(true);
 
-// check for dist folder
-if (!fs.existsSync(distDir))
-	return console.log(prefix+colors.red('dist folder not found'));
+    rl.on('line', function (line) {
+        //rl.prompt(false);
 
+        line=line.trim();
+        
+        if(acceptedCommands.indexOf(line)==-1 ){
+          console.log(prefix+ "Commands: "+acceptedCommands);
+          rl.prompt(true);
+          return;
+        }
+        
+        if(line=="deploy"){
 
-// zip dist folder
-console.log(prefix+"Zipping dist folder")
-var zipDest = currentDir+"/"+packageJson.name+packageJson.version+".zip";
-var output = fs.createWriteStream(zipDest);
-zipArchive.pipe(output);
+          clientHandler.getZip(function(filename){
+            console.log(prefix+"Sending zip..");
+        		var stream = ss.createStream();
+            ss(socket).emit('deploy', stream, {name: filename});
+            fs.createReadStream(filename).pipe(stream);
+        	});
 
-zipArchive.bulk([
-    { src: [ '**/*' ], cwd: distDir, expand: true }
-]);
+        }
+        else if(line=="status"){
+          socket.emit('status',{});
+        }
 
-zipArchive.finalize(function(err, bytes) {
-    if(err) {
-      throw err;
-    }
+        
+
+        
+    });
 });
 
-output.on('close', function() {
-    console.log(prefix+'Requesting to '+config.server);
+socket.on('deploy',function(data){
+  console.log(serverPrefix+data.message);
 
-	var req = request.post(config.server, function (err, resp, body) {
-	  if (err) return console.log(colors.red(err));
-	  var res = JSON.parse(body);
-
-	  if(res.status==200)
-	  	return console.log(prefix+"Deploy success");
-	  else if(res.status==400 || res.status==500)
-	  	return console.log(prefix+colors.red(res.message));
-
-	  //console.log(resp);
-	  console.log(prefix+colors.red("No response found"));
-	  
-	});
-	var form = req.form();
-	form.append('file', fs.createReadStream(zipDest));
+  if(data.status == "end"){
+    rl.prompt(true);
+  }
 });
 
+socket.on('status',function(data){
+  console.log(serverPrefix+data.message);
+  if(data.status == "end"){
+    rl.prompt(true);
+  }
+});
 

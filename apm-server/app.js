@@ -1,42 +1,65 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var logger = require('morgan');
-var routes = require('./requestHandler');
+var io = require('socket.io')(4785);
+var ss = require('socket.io-stream');
+var fs = require('fs');
+var path = require('path');
 var config = require('./config');
 var deployHandler = require('./deployHandler');
 
-var app = express();
-
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-
-app.use('/', routes);
-
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-
-app.use(function(err, req, res, next) {
-  console.error(err.stack);
-  res.status(err.status || 500).json({status:500, message:"Internal server error"});
-
-});
 
 // deploy the old app on server start / restart / crash
-
 var packageJson = deployHandler.doesAppExists();
 if(packageJson){
-	console.log("Local app found !");
-	deployHandler.startApp(config.PORT_A);
+  console.log("Local app found !");
+  deployHandler.startApp(config.PORT_A);
 }
 
-module.exports = app;
+
+io.on('connection', function (socket) {
+  socket.on('send', function (data) {
+    console.log(data);
+  });
+
+  ss(socket).on('deploy', function(stream, data) {
+    io.emit('deploy', { message: 'Deploy initiated',status:'start'});
+    var filename = path.basename(data.name);
+    var output = fs.createWriteStream(filename);
+    stream.pipe(output);
+    
+
+    output.on('close', function() {
+      // zip done
+      deployHandler.deploy(filename,function(){
+        //when deploy done, notify all client
+        io.emit('deploy', { message: 'New app deploy on the server',status:'end'});
+
+        //remove the file
+        //fs.unlink(req.files.file.path, function(param){});
+      });
+    });
+
+  });
+
+  socket.on('status', function(data) {
+    deployHandler.getApp(config.PORT_A, function(pid){
+      if(pid)
+        message = "Server is running on pid: "+pid;
+      else
+        message = "Server is not running";
+
+      socket.emit('status',{message: message, status: 'end'});
+     });  
+   });  
+
+
+
+  socket.on('disconnect', function () {
+    console.log("user disconnected");
+    io.emit('user disconnected');
+  });
+
+
+});
+
+io.on('close', function(){
+  console.log('io disconnect');
+});

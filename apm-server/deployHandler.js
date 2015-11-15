@@ -1,9 +1,25 @@
 var fs = require('fs');
 var config = require('./config');
 var exec = require('child_process').exec;
+var AdmZip = require('adm-zip');
+
+var deploy = function(file,done){
+	// clean deploy directory
+	cleanDirectory(config.DEPLOY_PATH);
+
+	// Extract file directly from tmp
+	var zip = new AdmZip(file);
+	zip.extractAllTo(config.DEPLOY_PATH ,true);
+
+	console.log("extracted:"+file);
+
+	
+
+	// remove temp file on background
+	//fs.unlink(req.files.file.path, function(param){});
 
 
-var deploy = function(){
+
 	// check for project package.json
 	var packageJson = doesAppExists();
 	if(!packageJson) return;
@@ -21,6 +37,7 @@ var deploy = function(){
     		setTimeout(function() {
 			  killApp(config.PORT_B,function(){
 			  	console.log("\n---------Deploy End--------\n");
+			  	done();
 			  });
 			}, 5000);
     	});
@@ -57,6 +74,15 @@ var startApp = function(port, callback){
 		exec(cmd,{}, function(error, stdout, stderr){});
 
 		cb();
+	});
+}
+
+var getApp = function(port,callback){
+	var searchCmd = "fuser -v "+port+"/tcp";
+	exec(searchCmd,{},function(error,stdout,stderr){
+		stdout = stdout.replace(new RegExp('[ \n\t]','g'), '');
+		
+		callback(stdout);
 	});
 }
 
@@ -121,6 +147,7 @@ var noop = function(a,b,c){}
 exports.deploy = deploy;
 exports.doesAppExists = doesAppExists;
 exports.startApp = startApp;
+exports.getApp = getApp;
 exports.killApp = killApp;
 exports.cleanDirectory = cleanDirectory;
 exports.deleteFolderRecursive = deleteFolderRecursive;
