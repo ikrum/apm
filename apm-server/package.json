@@ -1,14 +1,24 @@
 {
   "name": "apm-server",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Client for apm process manager",
+  "author": "Ikrum Hossain <ikrum.bd@gmail.com> (http://ikrum.net)",
   "scripts": {
     "start": "node ./app"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikrum/apm.git"
+  },
+  "license": "MIT",
   "dependencies": {
     "adm-zip": "^0.4.7",
     "path": "^0.12.7",
     "socket.io": "^1.3.7",
     "socket.io-stream": "^0.9.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/ikrum/apm/issues"
+  },
+  "homepage": "https://github.com/ikrum/apm#readme"
 }

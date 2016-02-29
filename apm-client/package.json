@@ -1,7 +1,7 @@
 {
-  "name": "apm-client",
+  "name": "apm",
   "version": "1.0.0",
-  "description": "Client for Akiraku process manager",
+  "description": "Client for apm process manager",
   "main": "main.js",
   "bin": {
     "apm": "main.js"
@@ -9,12 +9,20 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Ikrum Hossain",
-  "license": "ISC",
+  "author": "Ikrum Hossain <ikrum.bd@gmail.com> (http://ikrum.net)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikrum/apm.git"
+  },
+  "license": "MIT",
   "dependencies": {
     "archiver": "^0.16.0",
     "colors": "^1.1.2",
     "socket.io-client": "^1.3.7",
     "socket.io-stream": "^0.9.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/ikrum/apm/issues"
+  },
+  "homepage": "https://github.com/ikrum/apm#readme"
 }
