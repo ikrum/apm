@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Client for apm process manager",
   "author": "Ikrum Hossain <ikrum.bd@gmail.com> (http://ikrum.net)",
+  "bin": {
+    "apm-server": "run.js"
+  },
   "scripts": {
     "start": "node ./app"
   },

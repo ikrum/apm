@@ -1,8 +1,8 @@
-var io = require('socket.io')(4785);
+var config = require('./config');
+var io = require('socket.io')(config.APM_SERVER_PORT);
 var ss = require('socket.io-stream');
 var fs = require('fs');
 var path = require('path');
-var config = require('./config');
 var deployHandler = require('./deployHandler');
 
 

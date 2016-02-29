@@ -4,16 +4,19 @@ var socketio = require('socket.io-client')
 var readline = require('readline');
 var ss = require('socket.io-stream');
 var fs = require('fs');
-var config = require('./config');
 var clientHandler = require('./clientHandler');
 var colors = require('colors');
 
 var prefix = colors.gray("APM ");
 var serverPrefix = colors.gray("SERVER ");
 
-var socket = socketio(config.server);
-var rl = readline.createInterface(process.stdin, process.stdout);
+var argv = require('optimist').argv;
+if(!argv.server) return console.log("--server address required");
 
+console.log(argv.server);
+
+var socket = socketio(argv.server);
+var rl = readline.createInterface(process.stdin, process.stdout);
 var acceptedCommands=["deploy","status"]
 
 rl.setPrompt("apm:> ");
@@ -65,5 +68,15 @@ socket.on('status',function(data){
   if(data.status == "end"){
     rl.prompt(true);
   }
+});
+
+
+socket.on('connect_error', function(err){
+  console.log("connect_error");
+  console.log(err);
+
+});
+socket.on('connect_timeout', function(){
+  console.log("connect_timeout");
 });
 

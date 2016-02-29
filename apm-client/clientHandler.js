@@ -18,10 +18,7 @@ exports.getZip = function(callback){
 		config = JSON.parse(file);
 	}
 	catch(e){
-		if(e.message.indexOf("no such file")>0){
-			console.log(prefix+colors.red("config.json not found! Please re-install apm"));
-			return;
-		}
+			console.log(prefix+colors.red("config.json not found!"));
 	}
 
 	// check for project package.json
