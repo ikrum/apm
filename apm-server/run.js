@@ -10,7 +10,8 @@ var err = fs.openSync('./out.log', 'a');*/
 
 
 var spawn = require('child_process').spawn;
-spawn('node', [__dirname+'/app'], { detached: true});
+var child = spawn('node', [__dirname+'/app'], {detached: true, stdio: ['ignore', 'ignore', 'ignore']});
+child.unref();
 
 /*console.log("Apm server started");
 console.log(__dirname+'/app');*/
