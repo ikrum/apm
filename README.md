@@ -1,21 +1,22 @@
-# apm
-A realtime process manager to deploy node application
+# APM
+A process manager to deploy node application on runtime. Hasslefree `deploy` command to upload your app from your pc.
 
 #Setting server
 ####Install
 	sudo npm install apm-server -g
 #### Run the server
 	apm-server
-If your server has restrictions on PORTs (i.e Azure VM) you have to make `4785` port public.
+#### Port 
+APM runs on public port `4785`. So, if your server has restrictions on PORTs (i.e Azure VM) you have to make `4785` port public.
 
 #Installing Client
 	sudo npm install apm-client -g
 
-## Client Commands
+### Client Commands
 	$ apm --server localhost	// connect to your remote server, you can define server address in apm.json
-	apm:> status							// check server is running or not
-	apm:> deploy 							// deploy current folder or files spcified in apm.json
-	apm:> restart							// restart your app
+	apm:> status				// check server is running or not
+	apm:> deploy 				// deploy current folder or files spcified in apm.json
+	apm:> restart				// restart your app
 
 
 #Deploy node app
@@ -26,6 +27,8 @@ If your server has restrictions on PORTs (i.e Azure VM) you have to make `4785` 
 This will make a zip of the current folder and send server to deploy.
 
 You can specify your rules by having an `apm.json` file in the project directory. Define your project files to deploy in `src` array
+
+#### apm.json
 
 	{
 		"server": "127.0.0.1",
