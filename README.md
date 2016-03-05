@@ -42,23 +42,26 @@ Now you can do `deploy` without specifying `--server address`. If you are genera
 	apm
 	deploy
 	
-Your app will be deployed in `127.0.0.1:6001`. check your browser if it is running successfully or type `status` on `apm` console. so a simple nginx config would be
-
+Your app will be deployed in `127.0.0.1:6001`. check your browser if it is running successfully or type `status` on `apm` console. To avoid server down state, apm uses a temporary port `6002` to switch new app. so a simple nginx config would be:
 
 	server {
-	    listen 80;
+		listen       80;
+		server_name  example1.com;
 
-	    server_name example.com;
-
-	    location / {
-	        proxy_pass http://localhost:6001;
-	        proxy_http_version 1.1;
-	        proxy_set_header Upgrade $http_upgrade;
-	        proxy_set_header Connection 'upgrade';
-	        proxy_set_header Host $host;
-	        proxy_cache_bypass $http_upgrade;
-	    }
+		location / {
+			proxy_pass http://127.0.0.1:6001;
+		}
 	}
+
+	server {
+		listen       80;
+		server_name  example2.com;
+
+		location / {
+			proxy_pass http://127.0.0.1:6002;
+		}
+	}
+
 
 # Commands
 	$apm --server 127.0.0.1
