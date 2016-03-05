@@ -1,6 +1,6 @@
 {
-  "name": "apm",
-  "version": "1.0.0",
+  "name": "apm-client",
+  "version": "1.0.1",
   "description": "Client for apm process manager",
   "main": "main.js",
   "bin": {

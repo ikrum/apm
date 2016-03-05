@@ -20,10 +20,12 @@ io.on('connection', function (socket) {
   });
 
   ss(socket).on('deploy', function(stream, data) {
-    io.emit('deploy', { message: 'Deploy initiated',status:'start'});
+    
+    io.emit('deploy', { message: 'Receiving file data ........',status:'start'});
     var filename = path.basename(data.name);
     var output = fs.createWriteStream(filename);
     stream.pipe(output);
+    io.emit('deploy', { message: 'File accepted. Please wait while deploy is processing',status:'start'});
     
 
     output.on('close', function() {

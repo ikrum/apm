@@ -1,6 +1,6 @@
 {
   "name": "apm-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Client for apm process manager",
   "author": "Ikrum Hossain <ikrum.bd@gmail.com> (http://ikrum.net)",
   "bin": {
