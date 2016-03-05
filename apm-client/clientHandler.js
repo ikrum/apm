@@ -11,14 +11,15 @@ exports.getZip = function(callback){
 	var zipArchive = archiver('zip'); // create instance for each call
 
 	// Load apm config.json
-	try {
-		var configFile = __dirname + "/config.json";
-		var file = fs.readFileSync(configFile, 'utf8');
-		config = JSON.parse(file);
-	}
-	catch(e){
-			console.log(prefix+colors.red("config.json not found!"));
-	}
+	// try {
+	// 	var configFile = __dirname + "/config.json";
+	// 	var file = fs.readFileSync(configFile, 'utf8');
+	// 	config = JSON.parse(file);
+	// }
+	// catch(e){
+	// 		console.log(prefix+colors.red("config.json not found!"));
+	// }
+
 
 	// check for project package.json
 	try {
@@ -31,6 +32,12 @@ exports.getZip = function(callback){
 			console.log(prefix+colors.red("package.json not found"));
 			return;
 		}
+	}
+
+	try{
+		var check = packageJson.name+packageJson.version;
+	}catch(e){
+		return console.log(prefix+colors.red("Invalid package.json"));
 	}
 
 	// zip folder

@@ -35,7 +35,7 @@ io.on('connection', function (socket) {
       io.emit('deploy', { message: 'File accepted. Please wait while deploy is processing',status:'start'});
       deployHandler.deploy(filename,function(message){
         //when deploy done, notify all client
-        io.emit('deploy', { message: message,status:'end'});
+        io.emit('deploy', { message: message ,status:'end'});
       });
     });
 
@@ -54,13 +54,17 @@ io.on('connection', function (socket) {
 
   socket.on('restart', function(data) {
     init(function(message){
-      io.emit('deploy', { message: message || 'Server has been started again',status:'restart'});
+      io.emit('deploy', { message: message || 'Server has been restarted',status:'restart'});
     })
   });
 
   socket.on('disconnect', function () {
     console.log("user disconnected");
     io.emit('user disconnected');
+  });
+
+  process.on("deployError", function(data){
+    io.emit('deploy', data);
   });
 });
 

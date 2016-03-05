@@ -19,7 +19,7 @@ var deploy = function(file,done){
   startApp(config.PORT_B, function(){
   	// start app on the main port
   	startApp(config.PORT_A,function(){
-  		done('New app deployed ! App will be alive withing couple of seconds');
+  		done('New app deployed ! App will be alive within couple of seconds');
   		// kill the temp app after 5 second
   		setTimeout(function() {
 			  killApp(config.PORT_B,function(){});
@@ -49,7 +49,19 @@ var startApp = function(port, callback){
 
 	killApp(port,function(){
 		var cmd = "cd "+config.DEPLOY_PATH+" && PORT="+port+" node ./bin/www";
-		exec(cmd,{}, function(error, stdout, stderr){});
+		exec(cmd,{}, function(error, stdout, stderr){
+			/*
+				When app OR process is killed, callback will have error: Error: Command failed: cd /home/ikrum/apm-deploy && PORT=6001 node ./bin/www
+				Killed
+			*/
+			if(stderr) {
+				var cmdError = stderr.toString();
+				if(cmdError.indexOf("Killed") == -1){
+					// emit non killed OR start APP error
+					process.emit('deployError', { message: stderr.toString(), status:'end'});
+				}
+			}
+		});
 		cb();
 	});
 }

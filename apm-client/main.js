@@ -18,7 +18,7 @@ if(!address) return console.log("--server address required. Also can be configur
 
 var socket = socketio(utils.getURL(address));
 var rl = readline.createInterface(process.stdin, process.stdout);
-var acceptedCommands=["deploy","status"];
+var acceptedCommands=["deploy","status", "restart"];
 
 rl.setPrompt("apm:> ");
 
@@ -40,8 +40,8 @@ socket.on('connect', function(){
         fs.createReadStream(filename).pipe(stream);
     	});
     }
-    else if(line=="status"){
-      socket.emit('status',{});
+    else{
+      socket.emit(line,{});
     }
   });
 });
