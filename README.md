@@ -12,10 +12,10 @@ If your server has restrictions on PORTs (i.e Azure VM) you have to make `4785` 
 	sudo npm install apm-client -g
 
 ## Client Commands
-	$ apm --server localhost		// connect to your remote server, you can define server address in apm.json
-	apm:> status								// check server is running or not
-	apm:> deploy 								// deploy current folder or files spcified in apm.json
-	apm:> restart								// restart your app
+	$ apm --server localhost	// connect to your remote server, you can define server address in apm.json
+	apm:> status							// check server is running or not
+	apm:> deploy 							// deploy current folder or files spcified in apm.json
+	apm:> restart							// restart your app
 
 
 #Deploy node app
