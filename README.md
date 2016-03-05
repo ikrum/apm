@@ -63,7 +63,7 @@ Your app will be deployed in `127.0.0.1:6001`. check your browser if it is runni
 	}
 
 
-# Commands
+# Client Commands
 	$ apm --server localhost
 	apm:> status
 	apm:> deploy
