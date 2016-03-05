@@ -6,6 +6,7 @@ A realtime process manager to deploy node application
 	sudo npm install apm-server -g
 #### Run the server
 	apm-server
+If your server has restrictions on PORTs (i.e Azure VM) you have to make `4785` port public.
 
 #Installing Client
 	sudo npm install apm-client -g
