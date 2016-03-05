@@ -14,6 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/ikrum/apm.git"
   },
+  "keywords": [ "tools", "sysadmin", "dev ops", "devops", "process configuration", "keep process alive", "process manager", "monitoring", "daemon", "deployment", "deploy", "strong-pm", "node.js monitoring", "production", "reload", "express", "fault tolerant", "cli" ],
   "license": "MIT",
   "dependencies": {
     "archiver": "^0.16.0",
