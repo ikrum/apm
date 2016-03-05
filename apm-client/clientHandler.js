@@ -47,9 +47,9 @@ exports.getZip = function(callback){
 	]);
 
 	zipArchive.finalize(function(err, bytes) {
-	    if(err) {
-	      throw err;
-	    }
+    if(err) {
+      throw err;
+    }
 	});
 
 	output.on('close', function() {

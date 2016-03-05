@@ -11,38 +11,21 @@ var deploy = function(file,done){
 	var zip = new AdmZip(file);
 	zip.extractAllTo(config.DEPLOY_PATH ,true);
 
-	console.log("extracted:"+file);
-
-	
-
-	// remove temp file on background
-	//fs.unlink(req.files.file.path, function(param){});
-
-
-
 	// check for project package.json
 	var packageJson = doesAppExists();
-	if(!packageJson) return;
-	
-	console.log("\n---------Deploy Started--------\n");
+	if(!packageJson) return done("package.json not found");
 
-    // run app on temp port
-    startApp(config.PORT_B, function(message){
-    	console.log("\n");
-
-    	// start app on the main port
-    	startApp(config.PORT_A,function(message){
-
-    		// kill the temp app after 5 second
-    		setTimeout(function() {
-			  killApp(config.PORT_B,function(){
-			  	console.log("\n---------Deploy End--------\n");
-			  	done();
-			  });
+  // run app on temp port
+  startApp(config.PORT_B, function(){
+  	// start app on the main port
+  	startApp(config.PORT_A,function(){
+  		done('New app deployed ! App will be alive withing couple of seconds');
+  		// kill the temp app after 5 second
+  		setTimeout(function() {
+			  killApp(config.PORT_B,function(){});
 			}, 5000);
-    	});
-    });
-	
+  	});
+  });
 }
 
 var doesAppExists = function(){
@@ -64,15 +47,9 @@ var doesAppExists = function(){
 var startApp = function(port, callback){
 	var cb = callback || noop;
 
-	killApp(port,function(message){
-
-		console.log("Starting app on "+port);
-		//var cmd = "cd "+config.DEPLOY_PATH+" && npm install && bower install && PORT="+port+" node ./bin/www";
+	killApp(port,function(){
 		var cmd = "cd "+config.DEPLOY_PATH+" && PORT="+port+" node ./bin/www";
-
-		// async exec will listen to the app output
 		exec(cmd,{}, function(error, stdout, stderr){});
-
 		cb();
 	});
 }
@@ -81,15 +58,14 @@ var getApp = function(port,callback){
 	var searchCmd = "fuser -v "+port+"/tcp";
 	exec(searchCmd,{},function(error,stdout,stderr){
 		stdout = stdout.replace(new RegExp('[ \n\t]','g'), '');
-		
 		callback(stdout);
 	});
 }
 
 var killApp = function(port,callback){
 	var cb = callback || noop;
-
 	var searchCmd = "fuser -v "+port+"/tcp";
+
 	exec(searchCmd,{},function(error,stdout,stderr){
 		stdout = stdout.replace(new RegExp('[ \n\t]','g'), '');
 		if(stdout){
@@ -103,9 +79,7 @@ var killApp = function(port,callback){
 			console.log("KillApp failed: No pid found");
 			cb(error || stdout || stderr);
 		}
-		
-    });
-
+  });
 }
 
 // create required folder OR delete old files
@@ -115,15 +89,12 @@ var cleanDirectory = function (path){
 	}catch(e){}
 
 	try {
-		fs.mkdirSync(path);
-		//fs.mkdirSync(path+"/app"); // for extracted app
+		fs.mkdirSync(path); // create empty folder
 		return true;
 	} catch(e) {
-		// if ( e.code != 'EEXIST' ) throw e;
 		if ( e.code != 'EEXIST' ) return true;
 		return false;
 	}
-
 }
 
 // delete folder completely
@@ -143,7 +114,6 @@ var deleteFolderRecursive = function(path) {
 
 var noop = function(a,b,c){}
 
-
 exports.deploy = deploy;
 exports.doesAppExists = doesAppExists;
 exports.startApp = startApp;
@@ -151,19 +121,3 @@ exports.getApp = getApp;
 exports.killApp = killApp;
 exports.cleanDirectory = cleanDirectory;
 exports.deleteFolderRecursive = deleteFolderRecursive;
-
-
-/*
-	//"netstat -ln | grep ':5050 ' | grep 'LISTEN'"
-	var portQuery = "netstat -ln | grep ':"+config.PORT_A+" ' | grep 'LISTEN'"
-	
-	exec(portQuery,{},function(error,stdout,stderr){
-        if(stdout){
-    	// PORT_A is busy
-           startApp(config.PORT_B);
-        }else{
-        	console.log(config.PORT_A+" should be free");
-        	startApp(config.PORT_A);
-        	killApp(config.PORT_B);
-        }
-    });*/

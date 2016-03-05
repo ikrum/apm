@@ -23,27 +23,27 @@ var acceptedCommands=["deploy","status"];
 rl.setPrompt("apm:> ");
 
 socket.on('connect', function(){
-    rl.prompt(true);
+  rl.prompt(true);
 
-    rl.on('line', function (line) {
-        line=line.trim();
-        if(acceptedCommands.indexOf(line)==-1 ){
-          console.log(prefix+ "Commands: "+acceptedCommands);
-          rl.prompt(true);
-          return;
-        }
-        if(line=="deploy"){
-          clientHandler.getZip(function(filename){
-            console.log(prefix+"Sending zip..");
-        		var stream = ss.createStream();
-            ss(socket).emit('deploy', stream, {name: filename});
-            fs.createReadStream(filename).pipe(stream);
-        	});
-        }
-        else if(line=="status"){
-          socket.emit('status',{});
-        }
-    });
+  rl.on('line', function (line) {
+    line=line.trim();
+    if(acceptedCommands.indexOf(line)==-1 ){
+      console.log(prefix+ "Commands: "+acceptedCommands);
+      rl.prompt(true);
+      return;
+    }
+    if(line=="deploy"){
+      clientHandler.getZip(function(filename){
+        console.log(prefix+"Sending zip..");
+    		var stream = ss.createStream();
+        ss(socket).emit('deploy', stream, {name: filename});
+        fs.createReadStream(filename).pipe(stream);
+    	});
+    }
+    else if(line=="status"){
+      socket.emit('status',{});
+    }
+  });
 });
 
 socket.on('deploy',function(data){
