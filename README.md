@@ -48,9 +48,10 @@ You can specify your rules by having an `apm.json` file in the project directory
 
 Now you can do `deploy` without specifying `--server address`. If you are generating dist of your project you dont have to specify the files. just upload the whole folder.
 
-	cd dist
-	apm
-	deploy
+	$ cd dist
+	$ apm
+	
+	apm:> deploy
 	
 Your app will be deployed in `127.0.0.1:6001`. check your browser if it is running successfully or type `status` on `apm` console. To avoid server down state, apm uses a temporary port `6002` to switch new app. so a simple nginx config would be:
 
