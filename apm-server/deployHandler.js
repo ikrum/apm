@@ -48,7 +48,7 @@ var startApp = function(port, callback){
 	var cb = callback || noop;
 
 	killApp(port,function(){
-		var cmd = "cd "+config.DEPLOY_PATH+" && PORT="+port+" node ./bin/www";
+		var cmd = "cd "+config.DEPLOY_PATH+" && PORT="+port+" node ./bin/www >> log.txt";
 		exec(cmd,{}, function(error, stdout, stderr){
 			/*
 				When app OR process is killed, callback will have error: Error: Command failed: cd /home/ikrum/apm-deploy && PORT=6001 node ./bin/www
